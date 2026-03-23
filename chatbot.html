@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chatbot</title>
+    </head>
+    <body>
+        <div class="js-container"></div>
+        <script src="https://unpkg.com/supersimpledev/react.js"></script>
+        <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+        <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+        <script src="https://unpkg.com/supersimpledev/chatbot.js"></script>
+        <script type="text/babel">
+            function ChatInput({chatMessages,setChatMessages}){//all the components name should start with the capital letters called as the pascal casing.
+                const [inputText,setInputText] = React.useState('');
+                function saveInputText(event){
+                    setInputText(event.target.value);
+                }
+                function sendMessage(){
+                    const newChatMessages = [
+                        ...chatMessages,
+                        {
+                            message:inputText,
+                            sender:'user',
+                            id:crypto.randomUUID()
+                        }
+                    ]
+                    setChatMessages(newChatMessages);
+                    const response = Chatbot.getResponse(inputText);
+                    console.log(response);
+                    setChatMessages([
+                        ...newChatMessages,
+                        {
+                            message:response,
+                            sender:'robot',
+                            id:crypto.randomUUID()
+                        }
+                    ]);
+                    setInputText('');
+                }
+                return ( //this should retun the hrml code and we can only return the one element
+                    <>
+                        <input 
+                            placeholder="Send a message to Chatbot" 
+                            size="30" 
+                            value={inputText}
+                            onChange={saveInputText}
+                        />
+                        <button onClick={sendMessage}>Send</button>
+                    </>
+                );
+            }
+            function ChatMessage({message,sender,id}){ 
+                return (
+                    <div>
+                        {sender === 'robot'&& <img src="robot.png" width="30"/>}
+                        {message}
+                        {sender === 'user' && <img src="user.png" width="30"/>}
+                    </div>
+                );
+            }
+            function ChatMessages({chatMessages}){
+                
+                //const chatMessages = array[0];
+                //const setChatMessages = array[1];// we should use the camel casing nomiculator
+                //const [chatMessages,setChatMessages] = array; // called as array destructuring and we can also write as const array = React.useState([]); and then we can use the array[0] and array[1] to get the chatMessages and setChatMessages respectively.
+                return (
+                    <>
+                        {chatMessages.map((chatMessage)=>{
+                            return (
+                                <ChatMessage 
+                                    message = {chatMessage.message} // we use the curly brackets because if we use the '' it will save as the string okay?
+                                    sender={chatMessage.sender}
+                                    key = {chatMessage.id}
+                                />
+                            );
+                        })}
+                    </>
+                );
+            } 
+            function App(){
+                const [chatMessages,setChatMessages] = React.useState([
+                    {message: 'hello chatbot',sender: 'user',id:'id1'},
+                    {message:'hello ! how can i help you',sender:'robot',id:'id2'},
+                    {message:'can you get me todasy date?',sender:'user',id:'id3'},
+                    {message:'Today is February 14',sender:'robot',id:'id4'}
+                ]);
+                return (
+                    <>
+                        <ChatInput
+                            chatMessages = {chatMessages}
+                            setChatMessages = {setChatMessages}
+                        />
+                        <ChatMessages 
+                            chatMessages = {chatMessages}
+                        />
+                    </>
+                );
+            }
+            const container = document.querySelector('.js-container');
+            ReactDOM.createRoot(container).render(<App />);
+        </script>
+    </body>
+</html>
