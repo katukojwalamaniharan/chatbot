@@ -12,21 +12,40 @@
         <script type="text/babel">
             function ChatInput({chatMessages,setChatMessages}){//all the components name should start with the capital letters called as the pascal casing.
                 const [inputText,setInputText] = React.useState('');
+                const [isLoading, setIsLoading] = React.useState(false);
+                
                 function saveInputText(event){
                     setInputText(event.target.value);
                 }
-                function sendMessage(){
+                function handleKeyDown(event){
+                    if(event.key === 'Enter'){
+                        sendMessage();
+                    }else if(event.key === 'Escape'){
+                        setInputText('');
+                    }
+                }
+                async function sendMessage(){
+                    if (isLoading || inputText.trim() === '') return;
+                    setIsLoading(true);
                     const newChatMessages = [
                         ...chatMessages,
-                        {
+                        {   
                             message:inputText,
                             sender:'user',
                             id:crypto.randomUUID()
                         }
-                    ]
+                    ];
                     setChatMessages(newChatMessages);
-                    const response = Chatbot.getResponse(inputText);
-                    console.log(response);
+                    const loadingMessage = [
+                        ...newChatMessages,
+                        {   
+                            message:"Loading",
+                            sender:'robot',
+                            id:crypto.randomUUID()
+                        }
+                    ];
+                    setChatMessages(loadingMessage);
+                    const response = await Chatbot.getResponseAsync(inputText);
                     setChatMessages([
                         ...newChatMessages,
                         {
@@ -36,6 +55,7 @@
                         }
                     ]);
                     setInputText('');
+                    setIsLoading(false);
                 }
                 return ( //this should retun the hrml code and we can only return the one element
                     <>
@@ -44,6 +64,7 @@
                             size="30" 
                             value={inputText}
                             onChange={saveInputText}
+                            onKeyDown = {handleKeyDown}
                         />
                         <button onClick={sendMessage}>Send</button>
                     </>
@@ -78,12 +99,7 @@
                 );
             } 
             function App(){
-                const [chatMessages,setChatMessages] = React.useState([
-                    {message: 'hello chatbot',sender: 'user',id:'id1'},
-                    {message:'hello ! how can i help you',sender:'robot',id:'id2'},
-                    {message:'can you get me todasy date?',sender:'user',id:'id3'},
-                    {message:'Today is February 14',sender:'robot',id:'id4'}
-                ]);
+                const [chatMessages,setChatMessages] = React.useState([]);
                 return (
                     <>
                         <ChatInput
