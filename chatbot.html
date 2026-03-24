@@ -226,22 +226,25 @@
             }
 
             /* ================= MESSAGES LIST COMPONENT ================= */
-            function ChatMessages({chatMessages}){
-
-                // reference to container DOM
-                const chatMessagesRef = React.useRef(null);
-
-                // auto scroll when messages change
+            function useAutoScroll(dependencies){
+                const containerRef = React.useRef(null);
                 React.useEffect(()=>{ 
-                    const containerElem = chatMessagesRef.current;
+                    const containerElem = containerRef.current;
 
                     if(containerElem){
                         containerElem.scrollTop = containerElem.scrollHeight;
                     }
-                },[chatMessages]); // runs whenever chatMessages updates
+                },[dependencies]); // runs whenever chatMessages updates
+                return containerRef;
+            }
+            function ChatMessages({chatMessages}){
+
+                // reference to container DOM
+                const containerRef = useAutoScroll(chatMessages);
+                // auto scroll when messages change
 
                 return (
-                    <div className="chat-messages-container" ref={chatMessagesRef}>
+                    <div className="chat-messages-container" ref={containerRef}>
 
                         {/* loop through messages */}
                         {chatMessages.map((chatMessage)=>{
