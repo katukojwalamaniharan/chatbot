@@ -9,7 +9,6 @@
                 font-family: Arial; /* sets font for entire page */
                 margin: 0; /* removes default spacing */
             }
-
             /* send button styling */
             .send-button{
                 background-color: green; /* overridden below */
@@ -22,7 +21,6 @@
                 cursor: pointer;
                 background-color: #1b8453; /* actual color used */
             }
-
             /* input box styling */
             .chat-input{
                 padding: 12px 15px;
@@ -31,14 +29,12 @@
                 font-size: 15px;
                 flex-grow: 1; /* takes remaining space in flex container */
             }
-
             /* container for input + button */
             .chat-input-container{
                 display: flex; /* horizontal layout */
                 margin-bottom: 20px;
                 margin-top: 20px;
             }
-
             /* main app container */
             .app-container{
                 max-width: 600px; /* limits width */
@@ -48,21 +44,18 @@
                 display: flex;
                 flex-direction: column; /* vertical stacking */
             }
-
             /* user message alignment (right side) */
             .chat-message-user{
                 display: flex;
                 justify-content: end;
                 align-items: center;
             }
-
             /* robot message alignment (left side) */
             .chat-message-robot{
                 display: flex;
                 justify-content: flex-start;
                 align-items: center;
             }
-
             /* message bubble */
             .chat-message-text{
                 background-color: rgb(238,238,238);
@@ -73,18 +66,24 @@
                 display: inline-block;
                 max-width: 70%; /* prevents too wide messages */
             }
-
             /* profile image size */
             .chat-message-profile{
                 width: 45px;
             }
-
             /* messages container */
             .chat-messages-container{
                 flex-grow: 1 ; /* takes available vertical space */
                 margin-top: 20px;
                 overflow: scroll; /* enables scrolling */
                 scrollbar-width: none; /* hides scrollbar (Firefox) */
+            }
+            .loading-spinner {
+                height: 40px;
+                margin: -15px;
+            }
+            .welcome-message {
+                color: rgb(120, 120, 120);
+                text-align: center;
             }
         </style>
     </head>
@@ -129,9 +128,9 @@
 
                 // sends message to chatbot
                 async function sendMessage(){
-
                     // prevent sending when loading OR empty input
                     if (isLoading || inputText.trim() === '') return;
+                    setInputText('');
 
                     setIsLoading(true);
 
@@ -148,13 +147,13 @@
                     setChatMessages(newChatMessages);
 
                     // clear input field
-                    setInputText('');
+                    
 
                     // show temporary "Loading." message
                     const loadingMessage = [
                         ...newChatMessages,
                         {   
-                            message:"Loading.",
+                            message:<img src="loading-spinner.gif" className="loading-spinner" />,
                             sender:'robot',
                             id:crypto.randomUUID()
                         }
@@ -265,34 +264,19 @@
             function App(){
 
                 // main state holding all chat messages
-                const [chatMessages,setChatMessages] = React.useState([
-
-                    {
-                        message: "Hello 👋",                                                                                                            
-                        sender: "robot",
-                        id: crypto.randomUUID()
-                    },
-                    {
-                        message: "Hi!",
-                        sender: "user",
-                        id: crypto.randomUUID()
-                    },
-                    {
-                        message: "How can I help you?",
-                        sender: "robot",
-                        id: crypto.randomUUID()
-                    }
-
-                ]);
+                const [chatMessages,setChatMessages] = React.useState([]);
 
                 return (
                     <div className="app-container">
-
+                        {chatMessages.length === 0?(
+                            <p className="welcome-message">
+                                Welcome to the chatbot project! Send a message using the textbox below.
+                            </p>
+                        ):null}
                         {/* message list */}
                         <ChatMessages 
                             chatMessages = {chatMessages}
                         />
-
                         {/* input box */}
                         <ChatInput
                             chatMessages = {chatMessages}
