@@ -1,0 +1,27 @@
+{
+  "name": "chatbot",
+  "version": "1.0.0",
+  "description": "building a small scale chatbot by learning React-JS",
+  "main": "sample.js",
+  "scripts": {
+    "dev":"vite",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mktest": "mkdir test",
+    "rmtest": "rmdir test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katukojwalamaniharan/chatbot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/katukojwalamaniharan/chatbot/issues"
+  },
+  "homepage": "https://github.com/katukojwalamaniharan/chatbot#readme",
+  "dependencies": {
+    "supersimpledev": "^8.6.4"
+  }
+}
